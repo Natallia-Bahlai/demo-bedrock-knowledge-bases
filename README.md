@@ -113,7 +113,7 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 | Glue | Catalog Storage | Objects count | 1M objects | |
 | Redshift Serverless | Compute | RPU/Hour | | This charge to be confirmed in context of KB. No charges for idleness |
 | Lake Formation | Fine-grained Access | $0 | Always free | |
-| Glue Crawler | Schema generation | DPU/Hour | | Can be replaced with other alternatives or schema recognized as part of the XLS2CSV processing |
+| Glue Crawler | Schema generation | DPU/Hour | | One-time cost if no schema changes. <br/> Can be replaced with other alternatives or schema recognized as part of the XLS2CSV processing |
 
 
 
