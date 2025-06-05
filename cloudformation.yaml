@@ -83,17 +83,29 @@ Resources:
                   - "*"
               - Effect: Allow
                 Action:
+                  - "sqlworkbench:GetSqlRecommendations"
+                Resource:
+                  - "*"
+              - Effect: Allow
+                Action:
                   - "bedrock:InvokeModel"
                 Resource:
                   - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0"
+              - Effect: Allow
+                Action:
+                  - "bedrock:GenerateQuery"
+                Resource:
+                  - "*"
               - Effect: "Allow"
                 Action:
                 - "bedrock:ListKnowledgeBases"
                 - "bedrock:RetrieveAndGenerate"
                 - "bedrock:Retrieve"
                 - "bedrock:GenerateQuery"
+                - "bedrock:GetKnowledgeBase"
                 Resource:
                 - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:knowledge-base/*"
+                - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:knowledge-base/${KnowledgeBaseStructuredStore}"
 
   RedshiftAdminSecret:
     Type: AWS::SecretsManager::Secret
