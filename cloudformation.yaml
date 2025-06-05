@@ -3,11 +3,11 @@ Description: "Quick setup for data engineering"
 Parameters:
   Alias:
     Type: String
-    Default: "nbahlai"
-    Description: Tmp
+    Default: "demo"
+    Description: Some alias to prefix resource names
   SubnetIds:
     Type: List<AWS::EC2::Subnet::Id>
-    Description: Selected Subnets. 
+    Description: Selected Subnets in three AZs. 
   SecurityGroupIds:
     Type: List<AWS::EC2::SecurityGroup::Id>
     Description: Selected SecurityGroupIds
@@ -22,7 +22,7 @@ Resources:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256 
+              SSEAlgorithm: AES256
   S3GeneralBucketCSV:
     Type: AWS::S3::Bucket
     Properties:
@@ -32,22 +32,7 @@ Resources:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256     
-  Notebook:
-    Type: AWS::SageMaker::NotebookInstance
-    UpdateReplacePolicy: "Retain"
-    DeletionPolicy: "Delete"
-    Properties:
-      InstanceType: "ml.m5.xlarge" #ml.t3.medium
-      RoleArn: !GetAtt IAMExecutionRoleNotebook.Arn
-      PlatformIdentifier: notebook-al2-v3
-      SecurityGroupIds: !Ref SecurityGroupIds
-      SubnetId: !Select [0, !Ref SubnetIds]
-      DirectInternetAccess: "Enabled"
-      RootAccess: Disabled
-      Tags:
-        - Key: alias
-          Value: !Ref Alias
+              SSEAlgorithm: AES256
 
   IAMExecutionRoleNotebook: 
     Type: AWS::IAM::Role
@@ -96,6 +81,8 @@ Resources:
   
   IAMRoleRedshift:
     Type: "AWS::IAM::Role"
+    UpdateReplacePolicy: "Retain"
+    DeletionPolicy: "Delete"
     Properties:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -184,7 +171,7 @@ Resources:
     Properties:
       Path: "/service-role/"
       MaxSessionDuration: 3600
-      RoleName: !Sub "${Alias}-knowledge-base-role"
+      RoleName: "demo-knowledge-base-role"
       Policies:
       - PolicyDocument:
           Version: "2012-10-17"
@@ -221,9 +208,9 @@ Resources:
             - "s3:GetObject"
             Effect: "Allow"
           - Resource:
-            - !Sub "arn:aws:glue:us-east-1:639649899411:catalog"
-            - !Sub "arn:aws:glue:us-east-1:639649899411:database/${KBDB}"
-            - !Sub "arn:aws:glue:us-east-1:639649899411:table/${KBDB}/*"
+            - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:catalog"
+            - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/${KBDB}"
+            - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:table/${KBDB}/*"
             Action:
             - "glue:GetDatabases"
             - "glue:GetDatabase"
@@ -240,14 +227,16 @@ Resources:
         - Action: "sts:AssumeRole"
           Effect: "Allow"
           Principal:
-            Service: "bedrock.amazonaws.com"
+            Service: 
+              - "bedrock.amazonaws.com"
+              - "glue.amazonaws.com"
               
   KnowledgeBaseStructuredStore:
     Type: AWS::Bedrock::KnowledgeBase
     UpdateReplacePolicy: "Retain"
     DeletionPolicy: "Delete"
     Properties:
-      Name: !Sub "${Alias}-knowledge-base-v3"
+      Name: !Sub "${Alias}-knowledge-base-csv"
       Description: "Knowledge Base with a structured data store"
       RoleArn: !GetAtt IAMRoleKnowledgeBase.Arn
       KnowledgeBaseConfiguration:
@@ -267,9 +256,21 @@ Resources:
               - Type: AWS_DATA_CATALOG
                 AwsDataCatalogConfiguration:
                   TableNames:
-                    - nbahlai-kb.* #!Sub "${KBDB}
+                    - !Sub "${KBDB}.*"
             QueryGenerationConfiguration:
               ExecutionTimeoutSeconds: 60
+
+  RedshiftDataSource:
+    Type: AWS::Bedrock::DataSource
+    UpdateReplacePolicy: "Retain"
+    DeletionPolicy: "Delete"
+    DependsOn: KnowledgeBaseStructuredStore
+    Properties:
+      KnowledgeBaseId: !Ref KnowledgeBaseStructuredStore
+      Name: !Sub "${Alias}-datasource"
+      Description: Data source for Redshift Serverless workgroup to enable query engine
+      DataSourceConfiguration:
+        Type: REDSHIFT_METADATA
 
   CSVclassifier:
     Type: 'AWS::Glue::Classifier'
@@ -279,7 +280,7 @@ Resources:
       CsvClassifier:
         ContainsHeader: PRESENT
         Delimiter: ','
-        Name: "demo-csv-classifier"
+        Name: !Sub "${Alias}-csv-classifier"
         QuoteSymbol: '"'
 
   Crawler:
@@ -287,7 +288,7 @@ Resources:
     UpdateReplacePolicy: "Retain"
     DeletionPolicy: "Delete"
     Properties:
-      Name: "demo-crawler"
+      Name: !Sub "${Alias}-crawler"
       Role: !GetAtt IAMRoleCrawler.Arn
       DatabaseName: !Ref KBDB
       Targets:
