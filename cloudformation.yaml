@@ -11,6 +11,10 @@ Parameters:
   SecurityGroupIds:
     Type: List<AWS::EC2::SecurityGroup::Id>
     Description: Selected SecurityGroupIds
+  RepoURL:
+    Type: String
+    Default: "https://github.com/Natallia-Bahlai/demo-bedrock-kb.git"
+    Description: URL of the source code repository
     
 Resources:
   S3GeneralBucketXLS:
@@ -33,6 +37,20 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
+
+  Notebook:
+    Type: AWS::SageMaker::NotebookInstance
+    UpdateReplacePolicy: "Retain"
+    DeletionPolicy: "Delete"
+    Properties:
+      InstanceType: "ml.t3.medium"
+      RoleArn: !GetAtt IAMExecutionRoleNotebook.Arn
+      PlatformIdentifier: notebook-al2-v3
+      SecurityGroupIds: !Ref SecurityGroupIds
+      SubnetId: !Select [0, !Ref SubnetIds]
+      DirectInternetAccess: "Enabled"
+      RootAccess: Disabled
+      DefaultCodeRepository: !Ref RepoURL
 
   IAMExecutionRoleNotebook: 
     Type: AWS::IAM::Role
@@ -63,6 +81,19 @@ Resources:
                   - "s3:PutObject"
                 Resource:
                   - "*"
+              - Effect: Allow
+                Action:
+                  - "bedrock:InvokeModel"
+                Resource:
+                  - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0"
+              - Effect: "Allow"
+                Action:
+                - "bedrock:ListKnowledgeBases"
+                - "bedrock:RetrieveAndGenerate"
+                - "bedrock:Retrieve"
+                - "bedrock:GenerateQuery"
+                Resource:
+                - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:knowledge-base/*"
 
   RedshiftAdminSecret:
     Type: AWS::SecretsManager::Secret
