@@ -107,7 +107,7 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 
 | Service | Usage | Dimension | Free p/month | Notes |
 |---|---|---|---|---|
-| Bedrock LLM | Token usage | Token count | | |
+| Bedrock LLM | Token usage | Token count | | This cost is involved in case of RetrieveAndGenerate API or Bedrock Agents |
 | Bedrock Knowledge Base | SQL Query generation | Query count | | |
 | Glue | Catalog Requests | Request count | 1M requests | |
 | Glue | Catalog Storage | Objects count | 1M objects | |
