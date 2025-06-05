@@ -99,9 +99,9 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 
 | Aspect | Recommendation | Where |
 |---|---|---|
-| Extra context about schema | Provides metadata or supplementary information about tables or columns <br/> This helps to reduce hallucinations os misleading interpretation of certain columns  | KB Query configurations - Description |
-| NLQ examples | Provide a set of predefined question and answer examples. <br/> Questions are written as natural language queries (NLQ) and answers are the corresponding SQL query | KB Query configurations - Curated queries |
-| Whitelisted/blacklisted columns | Specify a set of tables or columns to be included or excluded for SQL generation <br/> This helps fine-tune and guide LLM to rely on predefined query bank, especially for complex queries which might not be obvious from the schema | KB Query configurations - Inclusions and Exclusions |
+| Extra context about schema | KB configurations for descriptions rovides metadata or supplementary information about tables or columns <br/> This helps to reduce hallucinations os misleading interpretation of certain columns  | KB → Query configurations → Description |
+| NLQ examples | KB configurations with curated queries provide a set of predefined question and answer examples. <br/> Questions are written as natural language queries (NLQ) and answers are the corresponding SQL query | KB → Query configurations → Curated queries |
+| Whitelisted/blacklisted columns | KB configurations with Inclusion/Exclusions Specify a set of tables or columns to be included or excluded for SQL generation <br/> This helps fine-tune and guide LLM to rely on predefined query bank, especially for complex queries which might not be obvious from the schema | KB → Query configurations → Inclusions and Exclusions |
 
 ## Understanding Cost
 
