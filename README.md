@@ -107,7 +107,7 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 | Bedrock Knowledge Base | SQL Query generation | Query count | | |
 | Glue | Catalog Requests | Request count | 1M requests | |
 | Glue | Catalog Storage | Objects count | 1M objects | |
-| Redshift Serverless | Compute | RPU/Hr | | No charges for idleness |
+| Redshift Serverless | Compute | RPU/Hr | | This charge to be confirmed in context of KB. No charges for idleness |
 | Lake Formation | Fine-grained Access | $0 | Always free | |
 
 
