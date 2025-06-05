@@ -63,7 +63,7 @@ graph TD
 ## Deployment guidelines with steps to setup
 
 1. Deploy [cloudformation.yaml](cloudformation.yaml) with {alias}=demo
-2. Upload CSV file ([CoffeeData.csv](CoffeeData.csv) or your own file) to a [S3 bucket](https://console.aws.amazon.com/s3/home) and run [Glue Crawler](https://console.aws.amazon.com/glue/home?#/v2/data-catalog/crawlers)
+2. Upload CSV file ([CoffeeData.csv](data/CoffeeData.csv) or your own file) to a [S3 bucket](https://console.aws.amazon.com/s3/home) and run [Glue Crawler](https://console.aws.amazon.com/glue/home?#/v2/data-catalog/crawlers)
 3. Once Redshift Namespace is provisioned, open [Redshift Query Editor V2](https://console.aws.amazon.com/sqlworkbench/home?#/client), login into demo-wg and run the following command:
 ```sql
 CREATE USER "IAMR:demo-knowledge-base-role" WITH PASSWORD DISABLE;
