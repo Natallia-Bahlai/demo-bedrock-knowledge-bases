@@ -89,8 +89,10 @@ Resources:
               - Effect: Allow
                 Action:
                   - "bedrock:InvokeModel"
+                  - "bedrock:GetInferenceProfile"
                 Resource:
-                  - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0"
+                  - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0"
+                  - !Sub "arn:aws:bedrock:*::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0" 
               - Effect: Allow
                 Action:
                   - "bedrock:GenerateQuery"
