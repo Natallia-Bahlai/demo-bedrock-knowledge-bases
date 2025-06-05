@@ -1,4 +1,5 @@
-# Quick start demo with Amazon Bedrock Knowledge Bases (KBs)
+# Quick start with Amazon Bedrock Knowledge Bases 
+Demo with Bedrock Knowledge Base (KB) powered by structured data store with CSV files
 
 ## Demo Solution Architecture
 ```mermaid
@@ -56,7 +57,7 @@ graph TD
     class KB,DS bedrock
 ```
 
-## Steps to deploy
+## Deployment guidelines with steps to setup
 
 1. Deploy [cloudformation.yaml](cloudformation.yaml) with {alias}=demo
 2. Upload CSV file ([CoffeeData.csv](CoffeeData.csv) or your own file) to a [S3 bucket](https://console.aws.amazon.com/s3/home) and run [Glue Crawler](https://console.aws.amazon.com/glue/home?#/v2/data-catalog/crawlers)
