@@ -1,4 +1,5 @@
-# Quick start demo with Amazon Bedrock Knowledge Bases (KBs)
+# Quick start with Amazon Bedrock Knowledge Bases 
+Demo with Bedrock Knowledge Base (KB) powered by structured data store with CSV files
 
 ## Demo Solution Architecture
 ```mermaid
@@ -16,7 +17,7 @@ graph TD
 
     subgraph Schema
         GDB[Glue Data Catalog]
-        CR[Glue Crawler]
+        CR["Glue Crawler <br/> Record schema with columns"]
     end
 
     subgraph Bedrock
@@ -56,7 +57,7 @@ graph TD
     class KB,DS bedrock
 ```
 
-## Steps to deploy
+## Deployment guidelines with steps to setup
 
 1. Deploy [cloudformation.yaml](cloudformation.yaml) with {alias}=demo
 2. Upload CSV file ([CoffeeData.csv](CoffeeData.csv) or your own file) to a [S3 bucket](https://console.aws.amazon.com/s3/home) and run [Glue Crawler](https://console.aws.amazon.com/glue/home?#/v2/data-catalog/crawlers)
@@ -66,7 +67,7 @@ CREATE USER "IAMR:demo-knowledge-base-role" WITH PASSWORD DISABLE;
 GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 ```
 
-3. Grant permissions to KB service role *demo-knowledge-base-role* through AWS Lake Formation. Open [AWS Lake Formation - Databases](https://console.aws.amazon.com/lakeformation/home?#/databases), select database *demo-kb* and grant Select/Describe permissions to KB service role:
+4. Grant permissions to KB service role *demo-knowledge-base-role* through AWS Lake Formation. Open [AWS Lake Formation - Databases](https://console.aws.amazon.com/lakeformation/home?#/databases), select database *demo-kb* and grant Select/Describe permissions to KB service role:
 
 | Config | Value |
 |---|---|
@@ -85,7 +86,16 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 - Which region has the highest profit?
 - What types of Espresso do we have?
 
-## How to imptove Accuracy further
+## How to imptove accuracy further
+
+| Aspect | Recommendation | Where |
+|---|---|---|
+| Extra context about schema | Provides metadata or supplementary information about tables or columns <br/> This helps to reduce hallucinations os misleading interpretation of certain columns  | KB Query configurations - Description |
+| NLQ examples | Provide a set of predefined question and answer examples. <br/> Questions are written as natural language queries (NLQ) and answers are the corresponding SQL query | KB Query configurations - Curated queries |
+| Whitelisted/blacklisted columns | Specify a set of tables or columns to be included or excluded for SQL generation <br/> This helps fine-tune and guide LLM to rely on predefined query bank, especially for complex queries which might not be obvious from the schema | KB Query configurations - Inclusions and Exclusions |
+
+## Understanding Cost
 
 ## References 
 [How to allow KB service role to access structured data store](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-prereq-structured.html#knowledge-base-prereq-structured-db-access)
+[Bedrock KB APIs for structured data](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-generate-query.html)
