@@ -89,6 +89,8 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 - Which region has the highest profit?
 - What types of Espresso do we have?
 
+8. Now open JupyterLab env from [Sagemaker Notebook](https://console.aws.amazon.com/sagemaker/home?#/notebooks-and-git-repos) and experiment with Bedrock APIs to run natural language queries (NLQ) and review response with SQL queries. This can help to create bank of curated queries for Knowledge Base configuration
+
 ## How to improve accuracy further
 
 | Aspect | Recommendation | Where |
