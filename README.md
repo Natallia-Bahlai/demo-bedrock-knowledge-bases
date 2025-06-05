@@ -4,7 +4,7 @@ Demo with Bedrock Knowledge Base (KB) powered by structured data store with CSV 
 ## Demo Solution Architecture
 ```mermaid
 graph TD
-    direction TB
+    direction LR
     subgraph Storage
         DSXLS[Data Source with Excels]
         S3CSV[S3 CSV Bucket]
@@ -21,11 +21,13 @@ graph TD
     end
 
     subgraph Bedrock
+        direction LR
         KB[Knowledge Base]
         DS[Data Source - Reference for Query Engine only]
+        FM["Foundational Models"]
     end
 
-    subgraph API[Knowledge Base APIs]
+    subgraph API[Bedrock Agentic APIs]
         direction TB
         GenerateQuery["GenerateQuery API: <br/> Generate SQL query"]
         Retrieve["Retrieve API: <br/> Return the result of the SQL query execution"]
@@ -38,10 +40,11 @@ graph TD
     
     RSN --> RS
     
-    GDB --> KB
+    GDB --> DS
     RS --> KB
-    KB --> DS
+    DS --> KB
     KB --> API
+    %%RetrieveAndGenerate -->| explicit LLM usage to augment response| FM
 
     %% Style definitions
     classDef storage fill:#f5f5f5,stroke:#666,stroke-width:2px
@@ -86,7 +89,7 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 - Which region has the highest profit?
 - What types of Espresso do we have?
 
-## How to imptove accuracy further
+## How to improve accuracy further
 
 | Aspect | Recommendation | Where |
 |---|---|---|
@@ -95,6 +98,18 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 | Whitelisted/blacklisted columns | Specify a set of tables or columns to be included or excluded for SQL generation <br/> This helps fine-tune and guide LLM to rely on predefined query bank, especially for complex queries which might not be obvious from the schema | KB Query configurations - Inclusions and Exclusions |
 
 ## Understanding Cost
+
+| Service | Usage | Dimentsion | Free p/month | Notes |
+|---|---|---|---|---|
+| Bedrock LLM | Token usage | Token count | | |
+| Bedrock Knowledge Base | SQL Query generation | Query count | | |
+| Glue | Catalog Requests | Request count | 1M requests | |
+| Glue | Catalog Storage | Objects count | 1M objects | |
+| Redshift Serverless | Compute | RPU/Hr | | No charges for idleness |
+| Lake Formation | Fine-grained Access | $0 | Always free | |
+
+
+
 
 ## References 
 [How to allow KB service role to access structured data store](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-prereq-structured.html#knowledge-base-prereq-structured-db-access)
