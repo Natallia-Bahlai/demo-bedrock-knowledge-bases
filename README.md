@@ -83,7 +83,11 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
    
 5. Go to [Amazon Bedrock - Knowledge Bases](https://console.aws.amazon.com/bedrock/home?#/knowledge-bases) and open Knowledge Base with name "{alias}-knowledge-base-csv". Click Sync in Query Engine section.
 6. Once Sync is in status Completed, click **Test Knowledge Base**
-7. Select LLM (e.g. Anthropic - Claude 3.7. Sonnet ) and experiment with various APIs.
+7. Select LLM (e.g. Anthropic - Claude 3.7. Sonnet ) and experiment with various APIs and natural language queries (NLQs):
+> [!NOTE]
+> Enable select model access here: [Bedrock Model Access](https://console.aws.amazon.com/bedrock/home?#/modelaccess)
+> <br/>Click Modify model access and check interested LLM e.g. Anthropic Claude Sonnet
+
 - What are key drink categories?
 - Which category has the highest sales?
 - Which region has the highest profit?
