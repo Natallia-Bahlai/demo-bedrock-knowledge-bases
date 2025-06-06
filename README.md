@@ -63,7 +63,7 @@ graph TD
 ## Deployment guidelines with steps to setup
 
 1. Deploy [cloudformation.yaml](cloudformation.yaml) with {alias}=demo
-2. Upload CSV file ([CoffeeData.csv](data/CoffeeData.csv) or your own file) to a [S3 bucket](https://console.aws.amazon.com/s3/home) and run [Glue Crawler](https://console.aws.amazon.com/glue/home?#/v2/data-catalog/crawlers)
+2. Upload CSV file ([coffeedata.csv](data/coffeedata.csv) or your own file) to a [S3 bucket](https://console.aws.amazon.com/s3/home) and run [Glue Crawler](https://console.aws.amazon.com/glue/home?#/v2/data-catalog/crawlers)
 3. Once Redshift Namespace is provisioned, open [Redshift Query Editor V2](https://console.aws.amazon.com/sqlworkbench/home?#/client), login into demo-wg and run the following command:
 ```sql
 CREATE USER "IAMR:demo-knowledge-base-role" WITH PASSWORD DISABLE;
@@ -93,7 +93,9 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 - Which region has the highest profit?
 - What types of Espresso do we have?
 
-8. Now open JupyterLab env from [Sagemaker Notebook](https://console.aws.amazon.com/sagemaker/home?#/notebooks-and-git-repos) and experiment with Bedrock APIs to run natural language queries (NLQ) and review response with SQL queries. This can help to create bank of curated queries for Knowledge Base configuration
+8. Now open JupyterLab env from [Sagemaker Notebook](https://console.aws.amazon.com/sagemaker/home?#/notebooks-and-git-repos) and [quick-start.ipynb](quick-start.ipynb). Experiment with Bedrock APIs to run natural language queries (NLQ) and review response with SQL queries. This can help to create bank of curated queries for Knowledge Base configuration
+
+[Work in progress] If you want to try *.xls file, upload [superstore.csv](data/superstore.xls) into *demo-xls-{account_id}* bucket, then run [scratchpad.ipynb](scratchpad.ipynb) to convert xls to csv files, then run Glue crawler to create table with schema per sheet. Finally, run Sync data source in KB. Click **Test Knowledge Base** and play with data. 
 
 ## How to improve accuracy further
 
