@@ -1,0 +1,49 @@
+{
+    "metadataAttributes": {   
+        "date": "date",
+        "sales": "number",
+        "profit": "number",
+        "region": "string",
+        "state": "string",
+        "category": "string",
+        "type": "string",
+        "caffeination": "string"
+    },
+    "documentStructureConfiguration": {
+        "type": "RECORD_BASED_STRUCTURE_METADATA",
+        "recordBasedStructureMetadata": {
+            "contentFields": [
+                {
+                    "fieldName": "type"
+                }
+            ],
+            "metadataFieldsSpecification": {
+                "fieldsToInclude": [
+                    
+                    {
+                        "fieldName": "date"
+                    },
+                    {
+                        "fieldName": "sales"
+                    },
+                    {
+                        "fieldName": "profit"
+                    },
+                    {
+                        "fieldName": "region"
+                    },
+                    {
+                        "fieldName": "state"
+                    },
+                    {
+                        "fieldName": "category"
+                    },
+                    {
+                        "fieldName": "caffeination"
+                    }
+                ],
+                "fieldsToExclude": []
+            }
+        }
+    }
+}
