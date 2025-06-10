@@ -113,7 +113,7 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 | Bedrock Knowledge Base | SQL Query generation | Query count | | |
 | Glue | Catalog Requests | Request count | 1M requests | |
 | Glue | Catalog Storage | Objects count | 1M objects | |
-| ~~Redshift Serverless~~ | ~~Compute~~ | ~~RPU/Hour~~ | | No charges ($0). Also Redshift Serverless doesn't charge for idleness |
+| Redshift Serverless | Compute | RPU/Hour | | Also Redshift Serverless doesn't charge for idleness |
 | Lake Formation | Fine-grained Access | $0 | Always free | |
 | Glue Crawler | Schema generation | DPU/Hour | | One-time cost if no schema changes. <br/> Can be replaced with other alternatives or schema recognized as part of the XLS2CSV processing |
 
