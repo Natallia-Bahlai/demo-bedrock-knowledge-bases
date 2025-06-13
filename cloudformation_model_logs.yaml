@@ -1,0 +1,103 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Quick setup"
+Parameters:
+  Alias:
+    Type: String
+    Default: "demo"
+    Description: Some alias to prefix resource names
+
+Resources:
+  S3Bucket:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::S3::Bucket"
+    DeletionPolicy: "Delete"
+    Properties:
+      PublicAccessBlockConfiguration:
+        RestrictPublicBuckets: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        BlockPublicAcls: true
+      BucketName: !Sub "${Alias}-logs-${AWS::AccountId}"
+      OwnershipControls:
+        Rules:
+        - ObjectOwnership: "BucketOwnerEnforced"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - BucketKeyEnabled: true
+          ServerSideEncryptionByDefault:
+            SSEAlgorithm: "AES256"
+            
+  DatabaseLogs:
+    UpdateReplacePolicy: "Retain"
+    Type: AWS::Glue::Database
+    DeletionPolicy: "Delete"
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Description: "Database for Model Invocation Logs"
+        Name: !Sub "${Alias}-logs"
+            
+  IAMRole:
+    Type: "AWS::IAM::Role"
+    UpdateReplacePolicy: "Retain"
+    DeletionPolicy: "Delete"
+    Properties:
+      Path: "/service-role/"
+      MaxSessionDuration: 3600
+      RoleName: !Sub "${Alias}-crawler-role"
+      Policies:
+      - PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Resource: "*"
+            Action:
+            - "glue:*"
+            - "s3:GetBucketLocation"
+            - "s3:ListBucket"
+            - "s3:ListAllMyBuckets"
+            - "s3:GetBucketAcl"
+            - "ec2:DescribeVpcEndpoints"
+            - "ec2:DescribeRouteTables"
+            - "ec2:CreateNetworkInterface"
+            - "ec2:DeleteNetworkInterface"
+            - "ec2:DescribeNetworkInterfaces"
+            - "ec2:DescribeSecurityGroups"
+            - "ec2:DescribeSubnets"
+            - "ec2:DescribeVpcAttribute"
+            - "iam:ListRolePolicies"
+            - "iam:GetRole"
+            - "iam:GetRolePolicy"
+            - "cloudwatch:PutMetricData"
+            Effect: "Allow"
+          - Resource: !Sub "arn:aws:s3:::${S3Bucket}/AWSLogs/${AWS::AccountId}/BedrockModelInvocationLogs*"
+            Action:
+            - "s3:GetObject"
+            - "s3:PutObject"
+            Effect: "Allow"
+          - Resource: "arn:aws:logs:*:*:*:/aws-glue/*"
+            Action:
+            - "logs:CreateLogGroup"
+            - "logs:CreateLogStream"
+            - "logs:PutLogEvents"
+            Effect: "Allow"
+        PolicyName: "nlq-policy-agent"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "glue.amazonaws.com"
+        
+  CrawlerLogs:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name: !Sub "${Alias}-crawler-logs"
+      Role: !GetAtt IAMRole.Arn
+      DatabaseName: !Ref DatabaseLogs
+      Targets:
+        S3Targets:
+          - Path: !Sub "${S3Bucket}/AWSLogs/${AWS::AccountId}/BedrockModelInvocationLogs/"
+      SchemaChangePolicy:
+        UpdateBehavior: "UPDATE_IN_DATABASE"
+        DeleteBehavior: "LOG"
