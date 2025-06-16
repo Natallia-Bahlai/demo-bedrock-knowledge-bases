@@ -112,10 +112,12 @@ GRANT USAGE ON DATABASE awsdatacatalog TO "IAMR:demo-knowledge-base-role";
 | Bedrock LLM | Token usage | Token count | | This cost is involved in case of RetrieveAndGenerate API or Bedrock Agents |
 | Bedrock Knowledge Base | SQL Query generation | Query count | | |
 | Glue | Catalog Requests | Request count | 1M requests | |
-| Glue | Catalog Storage | Objects count | 1M objects | |
-| Redshift Serverless | Compute | RPU/Hour | | Also Redshift Serverless doesn't charge for idleness |
+| Glue | Catalog Storage | Objects count | 1M objects | A metadata object in the Data Catalog is a table, table version, partition, partition indexes, statistics, database, or catalog |
+| Redshift Serverless | Compute | RPU/Hour | | Also Redshift Serverless doesn't charge for idleness <br> GenerateQuery API (generating SQL queries) in Bedrock Knowledge Base doesn’t consume Redshift Compute cost because queries are not executed. |
 | Lake Formation | Fine-grained Access | $0 | Always free | |
 | Glue Crawler | Schema generation | DPU/Hour | | One-time cost if no schema changes. <br/> Can be replaced with other alternatives or schema recognized as part of the XLS2CSV processing |
+| Secrets Manager | Secret | Secret count |---|---|
+| Secrets Manager | API Call | API call count |---|---|
 
 
 
