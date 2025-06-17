@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: "Quick setup for data engineering"
+Description: "Quick setup"
 Parameters:
   Alias:
     Type: String
@@ -7,7 +7,7 @@ Parameters:
     Description: Some alias to prefix resource names
   SubnetIds:
     Type: List<AWS::EC2::Subnet::Id>
-    Description: Selected Subnets in three AZs. 
+    Description: Selected Subnets in three AZs.  Make sure that there are at least 9 free IP addresses in 3 subnets. Each subnet should be in a different Availability Zone.
   SecurityGroupIds:
     Type: List<AWS::EC2::SecurityGroup::Id>
     Description: Selected SecurityGroupIds
@@ -92,7 +92,8 @@ Resources:
                   - "bedrock:GetInferenceProfile"
                 Resource:
                   - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0"
-                  - !Sub "arn:aws:bedrock:*::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0" 
+                  - !Sub "arn:aws:bedrock:*::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0"
+                  - !Sub "arn:aws:bedrock:*::foundation-model/anthropic.claude-3-5-sonnet-20240620-v1:0"
               - Effect: Allow
                 Action:
                   - "bedrock:GenerateQuery"
@@ -333,7 +334,7 @@ Resources:
     UpdateReplacePolicy: "Retain"
     DeletionPolicy: "Delete"
     Properties:
-      Name: !Sub "${Alias}-crawler"
+      Name: !Sub "${Alias}-crawler-kb"
       Role: !GetAtt IAMRoleCrawler.Arn
       DatabaseName: !Ref KBDB
       Targets:
@@ -396,4 +397,5 @@ Resources:
           Effect: "Allow"
           Principal:
             Service: "glue.amazonaws.com"
-        
+
+
